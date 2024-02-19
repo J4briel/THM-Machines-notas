@@ -1,0 +1,50 @@
+maquina agente sudo
+comenzamos con nmap para encontrar puertos abiertos
+
+nmap -sC -sV 10.10.152.121
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 ef1f5d04d47795066072ecf058f2cc07 (RSA)
+|   256 5e02d19ac4e7430662c19e25848ae7ea (ECDSA)
+|_  256 2d005cb9fda8c8d880e3924f8b4f18e2 (ED25519)
+80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
+|_http-title: Annoucement
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+primer gobuster con comon.txt
+
+2023/09/17 22:36:22 Starting gobuster in directory enumeration mode
+===============================================================
+/.hta                 (Status: 403) [Size: 278]
+/.htpasswd            (Status: 403) [Size: 278]
+/.htaccess            (Status: 403) [Size: 278]
+/index.php            (Status: 200) [Size: 218]
+/server-status        (Status: 403) [Size: 278]
+Progress: 4614 / 4615 (99.98%)
+
+
+el agente C se llamaria  Chris
+
+por medio de exiftool, binwalk, zip2hash, john obtuvimos un mensaje que pide enviar la foto a QXJlYTUx
+
+ingresamos por ssh con el usuario james con la contraseña el mensaje
+
+con el sudo -l obtenemos
+Matching Defaults entries for james on agent-sudo:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User james may run the following commands on agent-sudo:
+    (ALL, !root) /bin/bash
+
+en base a esto googleamos     (ALL, !root) /bin/bash
+encontramos el cve 2019-14287 
+creamos el exploit en python segun exploitdb
+lo ejecutamos y ya tenemos root
+
+herramientas utilizadas:
+nmap, gobuster, ftp, efixtool, binwalk, hexeditor, steghide, john, zip2john, ssh, python
+
