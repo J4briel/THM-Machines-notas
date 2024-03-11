@@ -1,0 +1,88 @@
+maquina intermermediate nmap
+
+comenzamos la maquina con una busqueda de puertos por medio de 
+
+nmap -p- --open -sS -T5 -vvv -n -Pn 10.10.114.116 -oG puertos
+
+PORT      STATE SERVICE      REASON
+22/tcp    open  ssh          syn-ack ttl 62
+2222/tcp  open  EtherNetIP-1 syn-ack ttl 63
+31337/tcp open  Elite        syn-ack ttl 62ssh
+
+Read data files from: /usr/bin/../share/nmap
+
+usamos extracsports
+
+22,2222,31337
+
+ahora vamos con 
+nmap -sC -sV -p22,2222,31337 10.10.114.116 -T5 
+
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 7d:dc:eb:90:e4:af:33:d9:9f:0b:21:9a:fc:d5:77:f2 (RSA)
+|   256 83:a7:4a:61:ef:93:a3:57:1a:57:38:5c:48:2a:eb:16 (ECDSA)
+|_  256 30:bf:ef:94:08:86:07:00:f7:fc:df:e8:ed:fe:07:af (ED25519)
+2222/tcp  open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 f8:15:22:d2:d4:9d:e6:97:5f:8f:f5:41:ed:3c:24:44 (RSA)
+|   256 ed:d7:98:3d:7d:7c:64:58:3b:0e:d2:9c:b5:88:45:d9 (ECDSA)
+|_  256 6d:38:83:9d:cf:e4:30:96:b7:5d:37:10:78:f5:9b:d0 (ED25519)
+31337/tcp open  Elite?
+| fingerprint-strings: 
+|   DNSStatusRequestTCP, DNSVersionBindReqTCP, FourOhFourRequest, GenericLines, GetRequest, HTTPOptions, Help, Kerberos, LANDesk-RC, LDAPBindReq, LDAPSearchReq, LPDString, NULL, RPCCheck, RTSPRequest, SIPOptions, SMBProgNeg, SSLSessionReq, TLSSessionReq, TerminalServer, TerminalServerCookie, X11Probe: 
+|     In case I forget - user:pass
+|_    ubuntu:Dafdas!!/str0ng
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port31337-TCP:V=7.94SVN%I=7%D=3/11%Time=65EF60E7%P=x86_64-pc-linux-gnu%
+SF:r(NULL,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!
+SF:/str0ng\n\n")%r(GetRequest,35,"In\x20case\x20I\x20forget\x20-\x20user:p
+SF:ass\nubuntu:Dafdas!!/str0ng\n\n")%r(SIPOptions,35,"In\x20case\x20I\x20f
+SF:orget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(GenericLines,35
+SF:,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n
+SF:\n")%r(HTTPOptions,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubu
+SF:ntu:Dafdas!!/str0ng\n\n")%r(RTSPRequest,35,"In\x20case\x20I\x20forget\x
+SF:20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(RPCCheck,35,"In\x20cas
+SF:e\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(DNSV
+SF:ersionBindReqTCP,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubunt
+SF:u:Dafdas!!/str0ng\n\n")%r(DNSStatusRequestTCP,35,"In\x20case\x20I\x20fo
+SF:rget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(Help,35,"In\x20c
+SF:ase\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(SS
+SF:LSessionReq,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Daf
+SF:das!!/str0ng\n\n")%r(TerminalServerCookie,35,"In\x20case\x20I\x20forget
+SF:\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(TLSSessionReq,35,"In
+SF:\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")
+SF:%r(Kerberos,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Daf
+SF:das!!/str0ng\n\n")%r(SMBProgNeg,35,"In\x20case\x20I\x20forget\x20-\x20u
+SF:ser:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(X11Probe,35,"In\x20case\x20I\x
+SF:20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(FourOhFourRe
+SF:quest,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/
+SF:str0ng\n\n")%r(LPDString,35,"In\x20case\x20I\x20forget\x20-\x20user:pas
+SF:s\nubuntu:Dafdas!!/str0ng\n\n")%r(LDAPSearchReq,35,"In\x20case\x20I\x20
+SF:forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n")%r(LDAPBindReq,35
+SF:,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n
+SF:\n")%r(LANDesk-RC,35,"In\x20case\x20I\x20forget\x20-\x20user:pass\nubun
+SF:tu:Dafdas!!/str0ng\n\n")%r(TerminalServer,35,"In\x20case\x20I\x20forget
+SF:\x20-\x20user:pass\nubuntu:Dafdas!!/str0ng\n\n");
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+por el momento tenemos data de 3 puertos abiertos (22,2222,31337) 
+lo cuales corren los servicios ssh, EtherNetIṔ-1, elite
+
+tenemos estas credenciales
+|     In case I forget - user:pass
+|_    ubuntu:Dafdas!!/str0ng
+
+
+entramos por ssh
+
+ssh ubuntu@10.10.114.116 -p 22
+buscamos la flag la cual la encontramos en el direccion
+/home/user/flag.txt
+la leemos
+
+flag{251f309497a18888dde5222761ea88e4}
+
+fin
+
